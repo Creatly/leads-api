@@ -1,9 +1,11 @@
 package server
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
 	"github.com/creatly/leads-api/internal/models"
+	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -16,40 +18,39 @@ type Server struct {
 	crm    CRM
 }
 
-func New(port string, crm CRM) *Server {
+func New(port int, crm CRM) *Server {
 	return &Server{
 		server: &http.Server{
-			Addr: fmt.Sprintf(":%s", port),
+			Addr: fmt.Sprintf(":%d", port),
 		},
 		crm: crm,
 	}
 }
 
 func (s *Server) Init() error {
-	mux := new(http.ServeMux)
-	mux.HandleFunc("/leads", s.leadsHandler)
-	s.server.Handler = mux
+	r := gin.Default()
+	r.POST("/leads", s.saveLead)
+	s.server.Handler = r
 
 	return s.server.ListenAndServe()
 }
 
-func (s *Server) leadsHandler(w http.ResponseWriter, req *http.Request) {
-	if req.Method != http.MethodPost {
-		w.WriteHeader(http.StatusNotImplemented)
-		return
-	}
+func (s *Server) Shutdown(ctx context.Context) error {
+	return s.server.Shutdown(ctx)
+}
 
+func (s *Server) saveLead(c *gin.Context) {
 	var lead models.Lead
-	if err := json.NewDecoder(req.Body).Decode(&lead); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+	if err := c.BindJSON(&lead); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
 	if err := s.crm.SaveLead(lead); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("SaveLead() error: %s", err.Error())
+		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	return
+	c.Status(http.StatusOK)
 }

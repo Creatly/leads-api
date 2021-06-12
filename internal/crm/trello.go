@@ -26,7 +26,7 @@ func (s *TrelloClient) SaveLead(lead models.Lead) error {
 	}
 
 	card := &trello.Card{
-		Name: fmt.Sprintf("%s %s - %s", lead.FirstName, lead.Email, lead.Source),
+		Name: lead.CardTitle(),
 		Desc: lead.Info(),
 	}
 
