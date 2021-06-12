@@ -2,20 +2,12 @@ package models
 
 import "fmt"
 
-type Source string
-
-const (
-	PDF      Source = "pdf"
-	Beta     Source = "beta"
-	DemoCall Source = "demo call"
-)
-
 type Lead struct {
 	FirstName string `json:"firstname" binding:"required"`
 	LastName  string `json:"lastname"`
 	Email     string `json:"email" binding:"required,email"`
 	Phone     string `json:"phone"`
-	Source    Source `json:"source" binding:"required"`
+	Source    string `json:"source" binding:"required"`
 }
 
 func (l Lead) Info() string {
