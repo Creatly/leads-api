@@ -34,10 +34,11 @@ func New(port int, crm CRM) *Server {
 
 func (s *Server) Init() error {
 	r := gin.Default()
-	r.Use(cors.New(cors.Config{
-		AllowOrigins: allowedOrigins,
-		AllowMethods: []string{"POST"},
-	}))
+
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = allowedOrigins
+	r.Use(cors.New(corsConfig))
+
 	r.POST("/leads", s.saveLead)
 	s.server.Handler = r
 
