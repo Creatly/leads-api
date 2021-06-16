@@ -4,9 +4,14 @@ import (
 	"context"
 	"fmt"
 	"github.com/creatly/leads-api/internal/models"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+)
+
+var (
+	allowedOrigins = []string{"https://creatly.me", "http://localhost", "http://localhost:3000"}
 )
 
 type CRM interface {
@@ -29,6 +34,10 @@ func New(port int, crm CRM) *Server {
 
 func (s *Server) Init() error {
 	r := gin.Default()
+	r.Use(cors.New(cors.Config{
+		AllowOrigins: allowedOrigins,
+		AllowMethods: []string{"POST"},
+	}))
 	r.POST("/leads", s.saveLead)
 	s.server.Handler = r
 
