@@ -21,12 +21,13 @@ make run
 
 ### API
 <b>POST /leads</b>
-```bigquery
+```json
 {
-    "firstname": string,
-    "lastname": string,
-    "email": string,
-    "phone": string,
-    "source": string
+    "firstname": "Vasya",
+    "lastname": "Pupkin",
+    "email": "vasyapupkin@gmail.com",
+    "phone": "+380996969228",
+    "source": "pdf",
+    "niche": "IT"
 }
 ```
