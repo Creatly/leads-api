@@ -28,6 +28,8 @@ make run
     "email": "vasyapupkin@gmail.com",
     "phone": "+380996969228",
     "source": "pdf",
-    "niche": "IT"
+    "niche": "IT",
+    "utm_source": "instagram",
+    "utm_medium": "target"
 }
 ```
