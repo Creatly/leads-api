@@ -4,7 +4,6 @@ import "fmt"
 
 type Lead struct {
 	FirstName string `json:"firstname" binding:"required"`
-	LastName  string `json:"lastname"`
 	Email     string `json:"email" binding:"required,email"`
 	Phone     string `json:"phone"`
 	Source    string `json:"source" binding:"required"`
