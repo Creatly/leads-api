@@ -1,6 +1,28 @@
 package models
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+	"text/template"
+)
+
+const templateInfo = `Имя: {{MakeItBold .FirstName}}
+Email: {{MakeItBold .Email}}
+Телефон: {{MakeItBold .Phone}}
+Форма: {{MakeItBold .Source}}
+Ниша: {{MakeItBold .Niche}}
+UTM Source: {{MakeItBold .UtmSource}}
+UTM Medium: {{MakeItBold .UtmMedium}}
+`
+
+var objTemplateInfo = template.Must(
+	template.
+		New("Info").
+		Funcs(template.FuncMap{
+			"MakeItBold": func(s string) string { return "**" + s + "***" },
+		}).
+		Parse(templateInfo),
+)
 
 type Lead struct {
 	FirstName string `json:"firstname" binding:"required"`
@@ -13,10 +35,21 @@ type Lead struct {
 }
 
 func (l Lead) Info() string {
-	return fmt.Sprintf("Имя: **%s**\nEmail: **%s**\nТелефон: **%s**\nФорма: **%s**\nНиша: **%s**\nUTM Source: **%s**\nUTM Medium: **%s**\n",
-		l.FirstName, l.Email, l.Phone, l.Source, l.Niche, l.UtmSource, l.UtmMedium)
+	//return fmt.Sprintf("Имя: **%s**\nEmail: **%s**\nТелефон: **%s**\nФорма: **%s**\nНиша: **%s**\nUTM Source: **%s**\nUTM Medium: **%s**\n",
+	//	l.FirstName, l.Email, l.Phone, l.Source, l.Niche, l.UtmSource, l.UtmMedium)
+	return l.String()
 }
 
 func (l Lead) CardTitle() string {
 	return fmt.Sprintf("%s | ИЗ ФОРМЫ - %s", l.Email, l.Source)
+}
+
+func (l Lead) String() string {
+	var buf bytes.Buffer
+
+	if err := objTemplateInfo.Execute(&buf, l); err != nil {
+		return err.Error()
+	}
+
+	return buf.String()
 }
