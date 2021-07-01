@@ -39,6 +39,9 @@ func (s *Server) Init() error {
 	corsConfig.AllowOrigins = allowedOrigins
 	r.Use(cors.New(corsConfig))
 
+	r.GET("/ping", func(c *gin.Context) {
+		c.String(http.StatusOK, "pong")
+	})
 	r.POST("/leads", s.saveLead)
 	s.server.Handler = r
 
