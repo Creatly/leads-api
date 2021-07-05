@@ -19,7 +19,7 @@ var objTemplateInfo = template.Must(
 	template.
 		New("Info").
 		Funcs(template.FuncMap{
-			"MakeItBold": func(s string) string { return "**" + s + "***" },
+			"MakeItBold": func(s string) string { return "**" + s + "**" },
 		}).
 		Parse(templateInfo),
 )
@@ -35,8 +35,6 @@ type Lead struct {
 }
 
 func (l Lead) Info() string {
-	//return fmt.Sprintf("Имя: **%s**\nEmail: **%s**\nТелефон: **%s**\nФорма: **%s**\nНиша: **%s**\nUTM Source: **%s**\nUTM Medium: **%s**\n",
-	//	l.FirstName, l.Email, l.Phone, l.Source, l.Niche, l.UtmSource, l.UtmMedium)
 	return l.String()
 }
 
